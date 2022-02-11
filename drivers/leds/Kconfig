@@ -138,6 +138,12 @@ config LEDS_FSG
 	help
 	  This option enables support for the LEDs on the Freecom FSG-3.
 
+config LEDS_NUC980
+	tristate "Custom LED Support for the NUC980 processor"
+	depends on LEDS_CLASS
+	help
+	  This option enables my testing support for GPIO LEDs on the NUC980 board
+
 config LEDS_WRAP
 	tristate "LED Support for the WRAP series LEDs"
 	depends on LEDS_CLASS
