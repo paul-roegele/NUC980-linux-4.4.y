@@ -4876,6 +4876,7 @@ static const struct pinctrl_map nuc980_pinmap[] = {
 static int nuc980_pinctrl_probe(struct platform_device *pdev)
 {
 	struct pinctrl_dev *pctl;
+	u32 reg = 0x0;
 
 	pctl = pinctrl_register(&nuc980_pinctrl_desc, &pdev->dev, NULL);
 	if (IS_ERR(pctl)) {
@@ -4883,6 +4884,23 @@ static int nuc980_pinctrl_probe(struct platform_device *pdev)
 	}
 
 	platform_set_drvdata(pdev, pctl);
+
+	printk("***** pinctrl-nuc980 *****\n");
+
+	// Revert PA to GPIO from JTAG
+	reg = __raw_readl(REG_MFP_GPA_L);
+	printk("REG_MFP_GPA_L Initial value 0x%08x\n", __raw_readl(REG_MFP_GPA_L));
+
+	// Logical AND to clear the bits we need to reset
+	reg &= 0xF0000000;
+
+	// Write the value
+	__raw_writel(reg, REG_MFP_GPA_L);
+
+	// Read it again to check
+	printk("REG_MFP_GPA_L New value     0x%08x\n", __raw_readl(REG_MFP_GPA_L));
+
+
 
 	return pinctrl_register_mappings(nuc980_pinmap, ARRAY_SIZE(nuc980_pinmap));
 
